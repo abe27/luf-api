@@ -13,8 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/joho/godotenv"
-
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -25,17 +24,17 @@ func init() {
 		panic("Error loading .env file")
 	}
 	// initial database
-	// dns := fmt.Sprintf("host=%s user=%s dbname=%s port=%s sslmode=%s TimeZone=%s", os.Getenv("DBHOST"), os.Getenv("DBUSER"), os.Getenv("DBNAME"), os.Getenv("DBPORT"), os.Getenv("SSLMODE"), os.Getenv("TZNAME"))
-	// if len(os.Getenv("DBPASSWORD")) > 0 {
-	// 	dns = fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s sslmode=%s TimeZone=%s", os.Getenv("DBHOST"), os.Getenv("DBUSER"), os.Getenv("DBNAME"), os.Getenv("DBPORT"), os.Getenv("DBPASSWORD"), os.Getenv("SSLMODE"), os.Getenv("TZNAME"))
-	// }
+	dsn := fmt.Sprintf("host=%s user=%s dbname=%s port=%s sslmode=%s TimeZone=%s", os.Getenv("DBHOST"), os.Getenv("DBUSER"), os.Getenv("DBNAME"), os.Getenv("DBPORT"), os.Getenv("SSLMODE"), os.Getenv("TZNAME"))
+	if len(os.Getenv("DBPASSWORD")) > 0 {
+		dsn = fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s sslmode=%s TimeZone=%s", os.Getenv("DBHOST"), os.Getenv("DBUSER"), os.Getenv("DBNAME"), os.Getenv("DBPORT"), os.Getenv("DBPASSWORD"), os.Getenv("SSLMODE"), os.Getenv("TZNAME"))
+	}
 
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
-	dsn := fmt.Sprintf("%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", os.Getenv("DBUSER"), os.Getenv("DBHOST"), os.Getenv("DBPORT"), os.Getenv("DBNAME"))
-	// //   db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := fmt.Sprintf("%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", os.Getenv("DBUSER"), os.Getenv("DBHOST"), os.Getenv("DBPORT"), os.Getenv("DBNAME"))
+	//   db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	// // fmt.Printf("DNS: %s\n", dns)
-	configs.Store, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	// fmt.Printf("DNS: %s\n", dns)
+	configs.Store, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		DisableAutomaticPing:                     true,
 		DisableForeignKeyConstraintWhenMigrating: false,
 		SkipDefaultTransaction:                   true,
@@ -49,7 +48,6 @@ func init() {
 			NameReplacer:  strings.NewReplacer("CID", "Cid"),
 		},
 	})
-	// configs.Store, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database")
