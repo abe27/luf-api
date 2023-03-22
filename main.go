@@ -48,8 +48,7 @@ func init() {
 	// 		NameReplacer:  strings.NewReplacer("CID", "Cid"),
 	// 	},
 	// })
-
-	configs.Store, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	configs.Store, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database")
