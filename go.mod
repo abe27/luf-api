@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.3.1 // indirect
@@ -38,5 +39,6 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	gopkg.in/mail.v2 v2.3.1
+	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/postgres v1.5.0
 )
