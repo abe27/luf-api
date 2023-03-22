@@ -2,20 +2,22 @@ package routes
 
 import (
 	"github.com/abe27/luckyapp/controllers"
-	controller "github.com/abe27/luckyapp/controllers"
 	"github.com/abe27/luckyapp/services"
 	"github.com/gofiber/fiber/v2"
 )
 
 func SetUpRouter(c *fiber.App) {
-	c.Get("/", controller.HandlerHello)
+	c.Get("/", controllers.HandlerHello)
 
 	// Prefix API routes
 	r := c.Group("/api/v1")
 
+	// Test sendMail
+	r.Get("/test", controllers.TestSendMail)
+
 	// LogIn API routes
 	u := r.Group("/auth")
-	u.Post("/register", controller.Register)
+	u.Post("/register", controllers.Register)
 	u.Post("/login", controllers.Login)
 
 	auth := r.Use(services.AuthorizationRequired)
@@ -23,71 +25,71 @@ func SetUpRouter(c *fiber.App) {
 
 	// Master Role
 	role := auth.Group("/role")
-	role.Get("", controller.GetRole)
-	role.Post("", controller.PostRole)
-	role.Put("/:id", controller.PutRole)
-	role.Delete("/:id", controller.DeleteRole)
+	role.Get("", controllers.GetRole)
+	role.Post("", controllers.PostRole)
+	role.Put("/:id", controllers.PutRole)
+	role.Delete("/:id", controllers.DeleteRole)
 
 	// Master Status
 	status := auth.Group("/status")
-	status.Get("", controller.GetStatus)
-	status.Post("", controller.PostStatus)
-	status.Put("/:id", controller.PutStatus)
-	status.Delete("/:id", controller.DeleteStatus)
+	status.Get("", controllers.GetStatus)
+	status.Post("", controllers.PostStatus)
+	status.Put("/:id", controllers.PutStatus)
+	status.Delete("/:id", controllers.DeleteStatus)
 
 	// Master Step Title
 	step := auth.Group("/step")
-	step.Get("", controller.GetStep)
-	step.Post("", controller.PostStep)
-	step.Put("/:id", controller.PutStep)
-	step.Delete("/:id", controller.DeleteStep)
+	step.Get("", controllers.GetStep)
+	step.Post("", controllers.PostStep)
+	step.Put("/:id", controllers.PutStep)
+	step.Delete("/:id", controllers.DeleteStep)
 
 	// Master Vendor Group
 	vendor := auth.Group("/vendor")
 	vendorDetail := vendor.Group("/detail")
-	vendorDetail.Get("", controller.GetVendorDetail)
-	vendorDetail.Post("", controller.PostVendorDetail)
-	vendorDetail.Put("/:id", controller.PutVendorDetail)
-	vendorDetail.Delete("/:id", controller.DeleteVendorDetail)
+	vendorDetail.Get("", controllers.GetVendorDetail)
+	vendorDetail.Post("", controllers.PostVendorDetail)
+	vendorDetail.Put("/:id", controllers.PutVendorDetail)
+	vendorDetail.Delete("/:id", controllers.DeleteVendorDetail)
 
 	vendorGroup := vendor.Group("/group")
-	vendorGroup.Get("", controller.GetVendorGroup)
-	vendorGroup.Post("", controller.PostVendorGroup)
-	vendorGroup.Put("/:id", controller.PutVendorGroup)
-	vendorGroup.Delete("/:id", controller.DeleteVendorGroup)
+	vendorGroup.Get("", controllers.GetVendorGroup)
+	vendorGroup.Post("", controllers.PostVendorGroup)
+	vendorGroup.Put("/:id", controllers.PutVendorGroup)
+	vendorGroup.Delete("/:id", controllers.DeleteVendorGroup)
 
 	// Master Permission
 	permission := auth.Group("/permission")
-	permission.Get("", controller.GetPermission)
-	permission.Post("", controller.PostPermission)
-	permission.Put("/:id", controller.PutPermission)
-	permission.Delete("/:id", controller.DeletePermission)
+	permission.Get("", controllers.GetPermission)
+	permission.Post("", controllers.PostPermission)
+	permission.Put("/:id", controllers.PutPermission)
+	permission.Delete("/:id", controllers.DeletePermission)
 
 	// Master Document
 	documentList := auth.Group("/document/list")
-	documentList.Get("", controller.GetDocumentList)
-	documentList.Post("", controller.PostDocumentList)
-	documentList.Put("/:id", controller.PutDocumentList)
-	documentList.Delete("/:id", controller.DeleteDocumentList)
+	documentList.Get("", controllers.GetDocumentList)
+	documentList.Post("", controllers.PostDocumentList)
+	documentList.Put("/:id", controllers.PutDocumentList)
+	documentList.Delete("/:id", controllers.DeleteDocumentList)
 
 	// Billing
 	billingList := auth.Group("/billing/list")
-	billingList.Get("", controller.GetBilling)
-	billingList.Post("", controller.PostBilling)
-	billingList.Put("/:id", controller.PutBilling)
-	billingList.Delete("/:id", controller.DeleteBilling)
+	billingList.Get("", controllers.GetBilling)
+	billingList.Post("", controllers.PostBilling)
+	billingList.Put("/:id", controllers.PutBilling)
+	billingList.Delete("/:id", controllers.DeleteBilling)
 
 	// Billing Document
 	billingDocument := auth.Group("/billing/document")
-	billingDocument.Get("", controller.GetBillingDocument)
-	billingDocument.Post("", controller.PostBillingDocument)
-	billingDocument.Put("/:id", controller.PutBillingDocument)
-	billingDocument.Delete("/:id", controller.DeleteBillingDocument)
+	billingDocument.Get("", controllers.GetBillingDocument)
+	billingDocument.Post("", controllers.PostBillingDocument)
+	billingDocument.Put("/:id", controllers.PutBillingDocument)
+	billingDocument.Delete("/:id", controllers.DeleteBillingDocument)
 
 	// Billing Document
 	billinStep := auth.Group("/billing/step")
-	billinStep.Get("", controller.GetBillingStep)
-	billinStep.Post("", controller.PostBillingStep)
-	billinStep.Put("/:id", controller.PutBillingStep)
-	billinStep.Delete("/:id", controller.DeleteBillingStep)
+	billinStep.Get("", controllers.GetBillingStep)
+	billinStep.Post("", controllers.PostBillingStep)
+	billinStep.Put("/:id", controllers.PutBillingStep)
+	billinStep.Delete("/:id", controllers.DeleteBillingStep)
 }
