@@ -165,22 +165,22 @@ func DBSeed() {
 		}
 	}
 
-	userData, _ := services.ReadJson("public/mock/user.json")
-	var user []models.User
-	json.Unmarshal(userData, &user)
-	for _, u := range user {
-		password := services.HashingPassword(u.Password)
-		isMatch := services.CheckPasswordHashing(u.Password, password)
-		if isMatch {
-			var r models.Role
-			if err := Store.First(&r, &models.Role{Title: *u.RoleID}).Error; err != nil {
-				panic(err)
-			}
-			u.RoleID = &r.ID
-			u.Password = password
-			if err := Store.FirstOrCreate(&u, &models.User{UserName: u.UserName}).Error; err != nil {
-				panic(err)
-			}
-		}
-	}
+	// userData, _ := services.ReadJson("public/mock/user.json")
+	// var user []models.User
+	// json.Unmarshal(userData, &user)
+	// for _, u := range user {
+	// 	password := services.HashingPassword(u.Password)
+	// 	isMatch := services.CheckPasswordHashing(u.Password, password)
+	// 	if isMatch {
+	// 		var r models.Role
+	// 		if err := Store.First(&r, &models.Role{Title: *u.RoleID}).Error; err != nil {
+	// 			panic(err)
+	// 		}
+	// 		u.RoleID = &r.ID
+	// 		u.Password = password
+	// 		if err := Store.FirstOrCreate(&u, &models.User{UserName: u.UserName}).Error; err != nil {
+	// 			panic(err)
+	// 		}
+	// 	}
+	// }
 }
