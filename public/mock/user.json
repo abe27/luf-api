@@ -1,0 +1,20 @@
+[
+    {
+        "username": "admin",
+        "full_name": "Administrator",
+        "email": "admin@localhost.com",
+        "password": "admin@1234",
+        "role_id": "Administrator",
+        "avatar_url": "-",
+        "is_active": true
+    },
+    {
+        "username": "vendor001",
+        "full_name": "Vendor 001",
+        "email": "vendor001@localhost.com",
+        "password": "vendor@1234",
+        "role_id": "Vendor",
+        "avatar_url": "-",
+        "is_active": true
+    }
+]

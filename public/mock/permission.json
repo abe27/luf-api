@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Administrator",
+        "description": "-",
+        "read": true,
+        "write": true,
+        "create": true,
+        "is_active": true
+    },
+    {
+        "title": "Billing Monitor",
+        "description": "-",
+        "read": false,
+        "write": false,
+        "create": false,
+        "is_active": true
+    },
+    {
+        "title": "Overdue Billing",
+        "description": "-",
+        "read": false,
+        "write": false,
+        "create": false,
+        "is_active": true
+    },
+    {
+        "title": "User Manangement",
+        "description": "-",
+        "read": false,
+        "write": false,
+        "create": false,
+        "is_active": true
+    }
+]

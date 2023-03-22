@@ -1,0 +1,38 @@
+[
+    {
+        "vendor_group_id":"Vendor001",
+        "document_id":"Purchase Order",
+        "role_id":"Vendor",
+        "is_active": true
+    },
+    {
+        "vendor_group_id":"Vendor001",
+        "document_id":"TXT invoice/delivery order",
+        "role_id":"Vendor",
+        "is_active": true
+    },
+    {
+        "vendor_group_id":"Vendor001",
+        "document_id":"Receipt",
+        "role_id":"Vendor",
+        "is_active": true
+    },
+    {
+        "vendor_group_id":"Vendor001",
+        "document_id": "Bill",
+        "role_id":"Vendor",
+        "is_active": true
+    },
+    {
+        "vendor_group_id":"Vendor002",
+        "document_id":"Receipt",
+        "role_id":"Vendor",
+        "is_active": true
+    },
+    {
+        "vendor_group_id":"Vendor002",
+        "document_id": "Bill",
+        "role_id":"Vendor",
+        "is_active": true
+    }
+]

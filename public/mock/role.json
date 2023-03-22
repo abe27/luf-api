@@ -1,0 +1,12 @@
+[
+    {
+        "title": "Administrator",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Vendor",
+        "description": "-",
+        "is_active": true
+    }
+]

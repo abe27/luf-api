@@ -9,7 +9,7 @@ import (
 
 type Status struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
+	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`
@@ -27,12 +27,13 @@ func (obj *Status) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 type Role struct {
-	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
-	Description string    `json:"description" form:"description"`
-	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
-	CreatedAt   time.Time `json:"created_at" default:"now"`
-	UpdatedAt   time.Time `json:"updated_at" default:"now"`
+	ID          string        `gorm:"primaryKey;size:21;" json:"id"`
+	Title       string        `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
+	Description string        `json:"description" form:"description"`
+	IsActive    bool          `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	CreatedAt   time.Time     `json:"created_at" default:"now"`
+	UpdatedAt   time.Time     `json:"updated_at" default:"now"`
+	RoleDetail  []*RoleDetail `json:"role_detail"`
 }
 
 func (obj *Role) BeforeCreate(tx *gorm.DB) (err error) {
@@ -43,7 +44,7 @@ func (obj *Role) BeforeCreate(tx *gorm.DB) (err error) {
 
 type VendorGroup struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
+	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`
@@ -58,7 +59,7 @@ func (obj *VendorGroup) BeforeCreate(tx *gorm.DB) (err error) {
 
 type DocumentList struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
+	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`
@@ -92,7 +93,7 @@ func (obj *Vendor) BeforeCreate(tx *gorm.DB) (err error) {
 
 type Permission struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
+	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	Read        bool      `gorm:"null" json:"read" form:"read" default:"false"`
 	Write       bool      `gorm:"null" json:"write" form:"write" default:"false"`
@@ -109,11 +110,11 @@ func (obj *Permission) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 type RoleDetail struct {
-	ID           string     `gorm:"primaryKey;size:21;" json:"id"`
-	Title        string     `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
-	Description  string     `json:"description" form:"description"`
+	ID string `gorm:"primaryKey;size:21;" json:"id"`
+	// Title        string     `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	RoleID       string     `json:"role_id" form:"role_id"`
 	PermissionID string     `json:"permission_id" form:"permission_id"`
+	Description  string     `json:"description" form:"description"`
 	IsActive     bool       `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt    time.Time  `json:"created_at" default:"now"`
 	UpdatedAt    time.Time  `json:"updated_at" default:"now"`
@@ -129,7 +130,7 @@ func (obj *RoleDetail) BeforeCreate(tx *gorm.DB) (err error) {
 
 type User struct {
 	ID        string    `gorm:"primaryKey;size:21;" json:"id"`
-	UserName  string    `gorm:"not null;column:username;index;unique;size:10" json:"username" form:"username" binding:"required,min:5"`
+	UserName  string    `gorm:"not null;column:username;index;unique;size:50" json:"username" form:"username" binding:"required,min:5"`
 	FullName  string    `json:"full_name" form:"full_name" binding:"required"`
 	Email     string    `gorm:"not null;unique;size:50;" json:"email" form:"email" binding:"required"`
 	Password  string    `gorm:"not null;unique;size:60;" json:"-" form:"password" binding:"required,min:6"`
@@ -149,7 +150,7 @@ func (obj *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 type Billing struct {
 	ID            string       `gorm:"primaryKey;size:21;" json:"id"`
-	BillingNo     string       `gorm:"not null;index;unique;size:10" json:"billing_no" form:"billing_no"`
+	BillingNo     string       `gorm:"not null;index;unique;size:50" json:"billing_no" form:"billing_no"`
 	BillingDate   time.Time    `gorm:"type:date;" json:"billing_date" form:"billing_date"`
 	DueDate       time.Time    `gorm:"type:date;" json:"due_date" form:"due_date"`
 	Amount        float64      `json:"amount" form:"amount" default:"0.00"`
@@ -195,7 +196,7 @@ func (obj *BillingDocument) BeforeCreate(tx *gorm.DB) (err error) {
 
 type StepTitle struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:10" json:"title" form:"title"`
+	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`

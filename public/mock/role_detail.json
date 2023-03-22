@@ -1,0 +1,23 @@
+[
+    {
+        "title": "Administrator",
+        "description": "Handler everything of system.",
+        "role_id": "Administrator",
+        "permission_id": "Billing Monitor",
+        "is_active": true
+    },
+    {
+        "title": "Administrator",
+        "description": "Handler everything of system.",
+        "role_id": "Administrator",
+        "permission_id": "User Manangement",
+        "is_active": true
+    },
+    {
+        "title": "Vendor",
+        "description": "User for upload document.",
+        "role_id": "Vendor",
+        "permission_id": "Overdue Billing",
+        "is_active": true
+    }
+]

@@ -51,6 +51,7 @@ func init() {
 
 	// Auto Migration DB
 	configs.SetDB()
+	configs.DBSeed()
 }
 
 func main() {

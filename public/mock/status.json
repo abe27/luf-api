@@ -1,0 +1,22 @@
+[
+    {
+        "title": "On Process",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Verify",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Rejected",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Approved",
+        "description": "-",
+        "is_active": true
+    }
+]

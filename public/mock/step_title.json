@@ -1,0 +1,22 @@
+[
+    {
+        "title": "Send File",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Wait For Verify",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Verify Success",
+        "description": "-",
+        "is_active": true
+    },
+    {
+        "title": "Payment Completed",
+        "description": "-",
+        "is_active": true
+    }
+]
