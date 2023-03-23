@@ -43,18 +43,18 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
 
-	// var role models.Role
-	// if err := configs.Store.Find(&role, &models.Role{Title: *frm.RoleID}).Error; err != nil {
-	// 	r.Message = err.Error()
-	// 	return c.Status(fiber.StatusNotFound).JSON(&r)
-	// }
+	var role models.Role
+	if err := configs.Store.Find(&role, &models.Role{Title: *frm.RoleID}).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
 
 	var user models.User
 	user.UserName = frm.UserName
 	user.FullName = frm.FullName
 	user.Email = frm.Email
 	user.Password = password
-	// user.RoleID = &role.ID
+	user.RoleID = &role.ID
 
 	if err := configs.Store.Create(&user).Error; err != nil {
 		r.Message = err.Error()
