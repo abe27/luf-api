@@ -74,7 +74,7 @@ func Login(c *fiber.Ctx) error {
 	// Check AuthorizationRequired
 	db := configs.Store
 	var userData models.User
-	if err := db.Where("username=?", user.UserName).First(&userData).Error; err != nil {
+	if err := db.Preload("Role").Where("username=?", user.UserName).First(&userData).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
