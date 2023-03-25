@@ -23,6 +23,11 @@ func SetUpRouter(c *fiber.App) {
 	auth := r.Use(services.AuthorizationRequired)
 	auth.Get("/profile", controllers.Profile)
 
+	// Master Member
+	member := auth.Group("/member")
+	member.Get("", controllers.GetMember)
+	member.Delete("/:id", controllers.DeleteMember)
+
 	// Master Role
 	role := auth.Group("/role")
 	role.Get("", controllers.GetRole)

@@ -121,3 +121,40 @@ func Profile(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(&r)
 }
+
+func GetMember(c *fiber.Ctx) error {
+	var r models.Response
+	if c.Query("id") != "" {
+		var member models.User
+		if err := configs.Store.Preload("Role").Find(&member, &models.User{ID: c.Query("id")}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Data = &member
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+	var member []models.User
+	if err := configs.Store.Preload("Role").Find(&member).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
+	r.Message = "Show all data"
+	r.Data = &member
+	return c.Status(fiber.StatusOK).JSON(&r)
+}
+
+func DeleteMember(c *fiber.Ctx) error {
+	var r models.Response
+	var user models.User
+	if err := configs.Store.First(&user, &models.User{ID: c.Params("id")}).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
+
+	if err := configs.Store.Delete(&user).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+	r.Message = "Delete success!"
+	return c.Status(fiber.StatusOK).JSON(&r)
+}
