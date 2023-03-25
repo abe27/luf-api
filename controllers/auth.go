@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/abe27/luckyapp/configs"
 	"github.com/abe27/luckyapp/models"
 	"github.com/abe27/luckyapp/services"
@@ -49,12 +51,27 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
+	// Upload GEDI File To Directory
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
+	fName := fmt.Sprintf("./public/user/%s", file.Filename)
+	if err := c.SaveFile(file, fName); err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
 	var user models.User
 	user.UserName = frm.UserName
 	user.FullName = frm.FullName
 	user.Email = frm.Email
+	user.Company = frm.Company
 	user.Password = password
 	user.RoleID = &role.ID
+	user.AvatarURL = fmt.Sprintf("/user/%s", file.Filename)
 
 	if err := configs.Store.Create(&user).Error; err != nil {
 		r.Message = err.Error()

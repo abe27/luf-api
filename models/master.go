@@ -133,6 +133,7 @@ type User struct {
 	UserName  string    `gorm:"not null;column:username;index;unique;size:50" json:"username" form:"username" binding:"required,min:5"`
 	FullName  string    `json:"full_name" form:"full_name" binding:"required"`
 	Email     string    `gorm:"not null;unique;size:50;" json:"email" form:"email" binding:"required"`
+	Company   string    `json:"company" form:"company" binding:"required"`
 	Password  string    `gorm:"not null;unique;size:60;" json:"-" form:"password" binding:"required,min:6"`
 	RoleID    *string   `json:"role_id" form:"role_id"`
 	AvatarURL string    `json:"avatar_url" form:"avatar_url"`
