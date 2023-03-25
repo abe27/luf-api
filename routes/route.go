@@ -26,6 +26,7 @@ func SetUpRouter(c *fiber.App) {
 	// Master Member
 	member := auth.Group("/member")
 	member.Get("", controllers.GetMember)
+	member.Put("/:id", controllers.UpdateMember)
 	member.Delete("/:id", controllers.DeleteMember)
 
 	// Master Role
