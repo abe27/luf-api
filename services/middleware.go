@@ -77,7 +77,7 @@ func AuthorizationRequired(c *fiber.Ctx) error {
 	_, er := ValidateToken(token)
 	if er != nil {
 		r.Message = "Token is Expired"
-		return c.Status(fiber.StatusMethodNotAllowed).JSON(&r)
+		return c.Status(fiber.StatusUnauthorized).JSON(&r)
 	}
 	return c.Next()
 }
