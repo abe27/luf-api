@@ -42,6 +42,13 @@ func (obj *Role) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+type FrmVendorGroup struct {
+	Title       string   `form:"title"`
+	Description string   `json:"description" form:"description"`
+	IsActive    bool     `form:"is_active" default:"false"`
+	Documents   []string `form:"documents"`
+}
+
 type VendorGroup struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
 	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
@@ -49,6 +56,7 @@ type VendorGroup struct {
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`
 	UpdatedAt   time.Time `json:"updated_at" default:"now"`
+	Documents   []*Vendor `json:"documents" form:"documents"`
 }
 
 func (obj *VendorGroup) BeforeCreate(tx *gorm.DB) (err error) {
