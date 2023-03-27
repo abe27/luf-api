@@ -12,7 +12,7 @@ func GetRole(c *fiber.Ctx) error {
 	var r models.Response
 	if c.Query("id") != "" {
 		var role models.Role
-		if err := configs.Store.Preload("RoleDetail").First(&role, &models.Role{ID: c.Query("id")}).Error; err != nil {
+		if err := configs.Store.Preload("RoleDetail.Role").First(&role, &models.Role{ID: c.Query("id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -23,7 +23,7 @@ func GetRole(c *fiber.Ctx) error {
 	}
 
 	var role []models.Role
-	if err := configs.Store.Preload("RoleDetail").Find(&role).Error; err != nil {
+	if err := configs.Store.Preload("RoleDetail.Role").Preload("RoleDetail.Permission").Find(&role).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
