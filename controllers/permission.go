@@ -23,9 +23,16 @@ func GetPermission(c *fiber.Ctx) error {
 	}
 
 	var obj []models.Permission
-	if err := configs.Store.Find(&obj).Error; err != nil {
-		r.Message = err.Error()
-		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	if c.Query("search") != "" {
+		if err := configs.Store.Where("title like ?", "%"+c.Query("search")+"%").Find(&obj).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+	} else {
+		if err := configs.Store.Find(&obj).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
 	}
 	r.Message = "Show All"
 	r.Data = &obj
