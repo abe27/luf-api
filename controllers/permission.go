@@ -12,7 +12,7 @@ func GetPermission(c *fiber.Ctx) error {
 	var r models.Response
 	if c.Query("id") != "" {
 		var obj models.Permission
-		if err := configs.Store.First(&obj, &models.Permission{ID: c.Query("id")}).Error; err != nil {
+		if err := configs.Store.Order("title").First(&obj, &models.Permission{ID: c.Query("id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -50,9 +50,9 @@ func PostPermission(c *fiber.Ctx) error {
 	var obj models.Permission
 	obj.Title = frm.Title
 	obj.Description = frm.Description
-	obj.Read = frm.Read
-	obj.Write = frm.Write
-	obj.Create = frm.Create
+	// obj.Read = frm.Read
+	// obj.Write = frm.Write
+	// obj.Create = frm.Create
 	obj.IsActive = frm.IsActive
 	if err := configs.Store.Create(&obj).Error; err != nil {
 		r.Message = err.Error()
@@ -79,9 +79,9 @@ func PutPermission(c *fiber.Ctx) error {
 	}
 	obj.Title = frm.Title
 	obj.Description = frm.Description
-	obj.Read = frm.Read
-	obj.Write = frm.Write
-	obj.Create = frm.Create
+	// obj.Read = frm.Read
+	// obj.Write = frm.Write
+	// obj.Create = frm.Create
 	obj.IsActive = frm.IsActive
 
 	if err := configs.Store.Save(&obj).Error; err != nil {

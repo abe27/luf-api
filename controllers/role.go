@@ -34,7 +34,7 @@ func GetRole(c *fiber.Ctx) error {
 
 func PostRole(c *fiber.Ctx) error {
 	var r models.Response
-	var frm models.Role
+	var frm models.FrmRole
 	if err := c.BodyParser(&frm); err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
@@ -44,13 +44,21 @@ func PostRole(c *fiber.Ctx) error {
 	role.Title = frm.Title
 	role.Description = frm.Description
 	role.IsActive = frm.IsActive
-	if err := configs.Store.Create(&role).Error; err != nil {
-		r.Message = err.Error()
-		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	// if err := configs.Store.Create(&role).Error; err != nil {
+	// 	r.Message = err.Error()
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	// }
+
+	for _, v := range frm.FrmRoleDetail {
+		switch v.Type {
+		case "create":
+		case "read":
+		case "write":
+		}
 	}
 
 	r.Message = "Role created successfully"
-	r.Data = &role
+	r.Data = &frm
 	return c.Status(fiber.StatusCreated).JSON(&r)
 }
 

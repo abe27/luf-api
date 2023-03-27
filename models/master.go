@@ -26,6 +26,19 @@ func (obj *Status) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+type FrmRoleDetail struct {
+	ID     string `json:"id"`
+	Type   string `json:"type"`
+	Status bool   `json:"checked"`
+}
+
+type FrmRole struct {
+	Title         string           `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
+	Description   string           `json:"description" form:"description"`
+	IsActive      bool             `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	FrmRoleDetail []*FrmRoleDetail `json:"role_detail"`
+}
+
 type Role struct {
 	ID          string        `gorm:"primaryKey;size:21;" json:"id"`
 	Title       string        `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
@@ -100,15 +113,15 @@ func (obj *Vendor) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 type Permission struct {
-	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
-	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
-	Description string    `json:"description" form:"description"`
-	Read        bool      `gorm:"null" json:"read" form:"read" default:"false"`
-	Write       bool      `gorm:"null" json:"write" form:"write" default:"false"`
-	Create      bool      `gorm:"null" json:"create" form:"create" default:"false"`
-	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
-	CreatedAt   time.Time `json:"created_at" default:"now"`
-	UpdatedAt   time.Time `json:"updated_at" default:"now"`
+	ID          string `gorm:"primaryKey;size:21;" json:"id"`
+	Title       string `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
+	Description string `json:"description" form:"description"`
+	// Read        bool      `gorm:"null" json:"read" form:"read" default:"false"`
+	// Write       bool      `gorm:"null" json:"write" form:"write" default:"false"`
+	// Create      bool      `gorm:"null" json:"create" form:"create" default:"false"`
+	IsActive  bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	CreatedAt time.Time `json:"created_at" default:"now"`
+	UpdatedAt time.Time `json:"updated_at" default:"now"`
 }
 
 func (obj *Permission) BeforeCreate(tx *gorm.DB) (err error) {
@@ -123,6 +136,9 @@ type RoleDetail struct {
 	RoleID       string     `json:"role_id" form:"role_id"`
 	PermissionID string     `json:"permission_id" form:"permission_id"`
 	Description  string     `json:"description" form:"description"`
+	Read         bool       `gorm:"null" json:"read" form:"read" default:"false"`
+	Write        bool       `gorm:"null" json:"write" form:"write" default:"false"`
+	Create       bool       `gorm:"null" json:"create" form:"create" default:"false"`
 	IsActive     bool       `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt    time.Time  `json:"created_at" default:"now"`
 	UpdatedAt    time.Time  `json:"updated_at" default:"now"`
