@@ -8,6 +8,7 @@ import (
 	"github.com/abe27/luckyapp/configs"
 	"github.com/abe27/luckyapp/models"
 	"github.com/gofiber/fiber/v2"
+	g "github.com/matoous/go-nanoid/v2"
 	"github.com/shakinm/xlsReader/xls"
 )
 
@@ -204,7 +205,8 @@ func ImportBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(&res)
 	}
 
-	fName := fmt.Sprintf("./public/import/%s", file.Filename)
+	fileId, _ := g.New()
+	fName := fmt.Sprintf("./public/import/%s-%s", fileId, file.Filename)
 	if err := c.SaveFile(file, fName); err != nil {
 		res.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&res)
