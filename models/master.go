@@ -184,7 +184,7 @@ type Billing struct {
 	PaymentDate   time.Time    `gorm:"type:date;" json:"payment_date" form:"payment_date"`
 	Detail        string       `json:"detail" form:"detail"`
 	StatusID      *string      `json:"status_id" form:"status_id"`
-	VendorGroupID *string      `json:"vendor_group_id" form:"vendor_group_id"`
+	VendorGroupID string       `json:"vendor_group_id" form:"vendor_group_id"`
 	IsActive      bool         `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt     time.Time    `json:"created_at" default:"now"`
 	UpdatedAt     time.Time    `json:"updated_at" default:"now"`

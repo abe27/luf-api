@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/abe27/luckyapp/configs"
 	"github.com/abe27/luckyapp/models"
@@ -26,6 +28,47 @@ func GetBilling(c *fiber.Ctx) error {
 	}
 
 	var billing []models.Billing
+
+	if c.Query("billing_no") != "" {
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Find(&billing, &models.Billing{BillingNo: c.Query("billing_no")}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
+	if c.Query("billing_date") != "" {
+		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Find(&billing, &models.Billing{BillingDate: ftime}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
+	if c.Query("vendor_group") != "" {
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Find(&billing, &models.Billing{VendorGroupID: c.Query("vendor_group")}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
 	if err := configs.Store.
 		Preload("Status").
 		Preload("VendorGroup").
@@ -53,21 +96,23 @@ func PostBilling(c *fiber.Ctx) error {
 	}
 
 	var vendorGroup models.VendorGroup
-	if err := configs.Store.First(&vendorGroup, &models.VendorGroup{Title: *frm.VendorGroupID}).Error; err != nil {
+	if err := configs.Store.First(&vendorGroup, &models.VendorGroup{ID: frm.VendorGroupID}).Error; err != nil {
 		r.Message = fmt.Sprintf("Vendor Group: %v", err.Error())
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
 	var billing models.Billing
-	billing.BillingNo = frm.BillingNo
+	billing.BillingNo = strings.ToUpper(frm.BillingNo)
 	billing.BillingDate = frm.BillingDate
 	billing.DueDate = frm.DueDate
 	billing.Amount = frm.Amount
-	billing.VendorCode = frm.VendorCode
-	billing.VendorName = frm.VendorName
-	billing.PaymentDate = frm.PaymentDate
+	billing.VendorCode = strings.ToUpper(frm.VendorCode)
+	billing.VendorName = strings.ToUpper(frm.VendorName)
+	// if frm.PaymentDate != "" {
+	// 	billing.PaymentDate = frm.PaymentDate
+	// }
 	billing.Detail = frm.Detail
-	billing.StatusID = frm.StatusID
+	billing.StatusID = &status.ID
 	billing.VendorGroupID = frm.VendorGroupID
 	billing.IsActive = frm.IsActive
 
@@ -98,7 +143,7 @@ func PutBilling(c *fiber.Ctx) error {
 	}
 
 	var vendorGroup models.VendorGroup
-	if err := configs.Store.First(&vendorGroup, &models.VendorGroup{Title: *frm.VendorGroupID}).Error; err != nil {
+	if err := configs.Store.First(&vendorGroup, &models.VendorGroup{ID: frm.VendorGroupID}).Error; err != nil {
 		r.Message = fmt.Sprintf("Vendor Group: %v", err.Error())
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
@@ -109,15 +154,17 @@ func PutBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
-	billing.BillingNo = frm.BillingNo
+	billing.BillingNo = strings.ToUpper(frm.BillingNo)
 	billing.BillingDate = frm.BillingDate
 	billing.DueDate = frm.DueDate
 	billing.Amount = frm.Amount
-	billing.VendorCode = frm.VendorCode
-	billing.VendorName = frm.VendorName
-	billing.PaymentDate = frm.PaymentDate
+	billing.VendorCode = strings.ToUpper(frm.VendorCode)
+	billing.VendorName = strings.ToUpper(frm.VendorName)
+	// if frm.PaymentDate != "" {
+	// 	billing.PaymentDate = frm.PaymentDate
+	// }
 	billing.Detail = frm.Detail
-	billing.StatusID = frm.StatusID
+	billing.StatusID = &status.ID
 	billing.VendorGroupID = frm.VendorGroupID
 	billing.IsActive = frm.IsActive
 
