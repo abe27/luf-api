@@ -85,3 +85,7 @@ Temporary Items
 tmp/
 go.sum
 .air.toml
+public/**/*.xls
+public/**/*.png
+public/**/*.jpg
+public/**/*.jpeg

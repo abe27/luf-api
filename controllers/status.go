@@ -12,7 +12,7 @@ func GetStatus(c *fiber.Ctx) error {
 	var r models.Response
 	if c.Query("id") != "" {
 		var obj models.Status
-		if err := configs.Store.First(&obj, &models.Status{ID: c.Query("id")}).Error; err != nil {
+		if err := configs.Store.Preload("Billing").First(&obj, &models.Status{ID: c.Query("id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -23,7 +23,16 @@ func GetStatus(c *fiber.Ctx) error {
 	}
 
 	var obj []models.Status
-	if err := configs.Store.Find(&obj).Error; err != nil {
+	if c.Query("seq") != "" {
+		if err := configs.Store.Order("seq").Preload("Billing").Where("seq > ?", 0).Find(&obj).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &obj
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+	if err := configs.Store.Order("seq").Preload("Billing").Find(&obj).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
