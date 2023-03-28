@@ -79,6 +79,8 @@ func SetUpRouter(c *fiber.App) {
 	documentList.Delete("/:id", controllers.DeleteDocumentList)
 
 	// Billing
+	billingListImport := auth.Group("/billing/import")
+	billingListImport.Post("", controllers.ImportBilling)
 	billingList := auth.Group("/billing/list")
 	billingList.Get("", controllers.GetBilling)
 	billingList.Post("", controllers.PostBilling)
