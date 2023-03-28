@@ -1,22 +1,32 @@
 [
     {
+        "title": "Open",
+        "description": "-",
+        "seq": 0,
+        "is_active": true
+    },
+    {
         "title": "On Process",
         "description": "-",
+        "seq": 1,
         "is_active": true
     },
     {
         "title": "Verify",
         "description": "-",
+        "seq": 2,
         "is_active": true
     },
     {
         "title": "Rejected",
         "description": "-",
+        "seq": 3,
         "is_active": true
     },
     {
         "title": "Approved",
         "description": "-",
+        "seq": 4,
         "is_active": true
     }
 ]

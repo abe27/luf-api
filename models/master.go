@@ -11,6 +11,7 @@ type Status struct {
 	ID          string    `gorm:"primaryKey;size:21;" json:"id"`
 	Title       string    `gorm:"not null;column:title;index;unique;size:50" json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
+	Seq         int       `json:"seq" form:"seq"`
 	IsActive    bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt   time.Time `json:"created_at" default:"now"`
 	UpdatedAt   time.Time `json:"updated_at" default:"now"`
