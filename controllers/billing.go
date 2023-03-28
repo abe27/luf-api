@@ -230,16 +230,17 @@ func ImportBilling(c *fiber.Ctx) error {
 					vendor_name, _ := r.GetCol(5)
 					vendor_group_id, _ := r.GetCol(6)
 
-					billing_no.GetString()
-					billing_date.GetString()
-					due_date.GetString()
-					amount.GetFloat64()
-					vendor_code.GetString()
-					vendor_name.GetString()
-					vendor_group_id.GetString()
+					// billing_no.GetString()
+					// billing_date.GetString()
+					// due_date.GetString()
+					// amount.GetFloat64()
+					// vendor_code.GetString()
+					// vendor_name.GetString()
+					// vendor_group_id.GetString()
 
 					var status models.Status
-					if err := configs.Store.First(&status, &models.Status{Title: "Open"}).Error; err != nil {
+					status.Title = "Open"
+					if err := configs.Store.FirstOrCreate(&status, &models.Status{Title: "Open"}).Error; err != nil {
 						res.Message = fmt.Sprintf("Status: %v", err.Error())
 						return c.Status(fiber.StatusNotFound).JSON(&res)
 					}
