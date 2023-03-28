@@ -114,6 +114,11 @@ func DeleteRole(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
+	if err := configs.Store.Delete(&models.RoleDetail{}, &models.RoleDetail{RoleID: c.Params("id")}).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
 	if err := configs.Store.Delete(&role).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
