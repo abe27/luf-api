@@ -176,29 +176,35 @@ func (obj *User) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 type Billing struct {
-	ID            string            `gorm:"primaryKey;size:21;" json:"id"`
-	BillingNo     string            `gorm:"not null;index;unique;size:50" json:"billing_no" form:"billing_no"`
-	BillingDate   time.Time         `gorm:"type:date;" json:"billing_date" form:"billing_date"`
-	DueDate       time.Time         `gorm:"type:date;" json:"due_date" form:"due_date"`
-	Amount        float64           `json:"amount" form:"amount" default:"0.00"`
-	VendorCode    string            `json:"vendor_code" form:"vendor_code"`
-	VendorName    string            `json:"vendor_name" form:"vendor_name"`
-	PaymentDate   time.Time         `gorm:"type:date;" json:"payment_date" form:"payment_date"`
-	Detail        string            `json:"detail" form:"detail"`
-	StatusID      string            `json:"status_id" form:"status_id"`
-	VendorGroupID string            `json:"vendor_group_id" form:"vendor_group_id"`
-	IsActive      bool              `gorm:"null" json:"is_active" form:"is_active" default:"false"`
-	CreatedAt     time.Time         `json:"created_at" default:"now"`
-	UpdatedAt     time.Time         `json:"updated_at" default:"now"`
-	Status        *Status           `gorm:"foreignKey:StatusID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"status"`
-	VendorGroup   *VendorGroup      `gorm:"foreignKey:VendorGroupID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"vendor_group"`
-	DocumentList  []BillingDocument `json:"document_list"`
+	ID            string             `gorm:"primaryKey;size:21;" json:"id"`
+	BillingNo     string             `gorm:"not null;index;unique;size:50" json:"billing_no" form:"billing_no"`
+	BillingDate   time.Time          `gorm:"type:date;" json:"billing_date" form:"billing_date"`
+	DueDate       time.Time          `gorm:"type:date;" json:"due_date" form:"due_date"`
+	Amount        float64            `json:"amount" form:"amount" default:"0.00"`
+	VendorCode    string             `json:"vendor_code" form:"vendor_code"`
+	VendorName    string             `json:"vendor_name" form:"vendor_name"`
+	PaymentDate   time.Time          `gorm:"type:date;" json:"payment_date" form:"payment_date"`
+	Detail        string             `json:"detail" form:"detail"`
+	StatusID      string             `json:"status_id" form:"status_id"`
+	VendorGroupID string             `json:"vendor_group_id" form:"vendor_group_id"`
+	IsActive      bool               `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	CreatedAt     time.Time          `json:"created_at" default:"now"`
+	UpdatedAt     time.Time          `json:"updated_at" default:"now"`
+	Status        *Status            `gorm:"foreignKey:StatusID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"status"`
+	VendorGroup   *VendorGroup       `gorm:"foreignKey:VendorGroupID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"vendor_group"`
+	DocumentList  []*BillingDocument `json:"document_list"`
+	BillingStep   []*BillingStatus   `json:"billing_step"`
 }
 
 func (obj *Billing) BeforeCreate(tx *gorm.DB) (err error) {
 	id, _ := g.New()
 	obj.ID = id
 	return
+}
+
+type FrmUpdateBilling struct {
+	Status string `json:"status" form:"status"` // status_id
+	Step   string `json:"step" form:"step"`     // billing_step
 }
 
 type BillingDocument struct {

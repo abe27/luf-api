@@ -19,7 +19,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			First(&billing, &models.Billing{ID: c.Query("id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
@@ -37,7 +38,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Where("billing_no like ?", "%"+c.Query("billing_no")+"%").
 			Where("billing_date", ftime).
 			Where("status_id", c.Query("status_id")).
@@ -54,7 +56,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Where("billing_no like ?", "%"+c.Query("billing_no")+"%").
 			Where("status_id", c.Query("status_id")).
 			Find(&billing).Error; err != nil {
@@ -71,7 +74,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Where("billing_date", ftime).
 			Where("status_id", c.Query("status_id")).
 			Find(&billing).Error; err != nil {
@@ -88,7 +92,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Where("billing_no like ?", "%"+c.Query("billing_no")+"%").
 			Where("billing_date", ftime).
 			Find(&billing).Error; err != nil {
@@ -104,7 +109,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Where("billing_no like ?", "%"+c.Query("billing_no")+"%").
 			Find(&billing).Error; err != nil {
 			r.Message = err.Error()
@@ -120,7 +126,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Find(&billing, &models.Billing{BillingDate: ftime}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
@@ -134,7 +141,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Find(&billing, &models.Billing{VendorGroupID: c.Query("vendor_group")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
@@ -148,7 +156,8 @@ func GetBilling(c *fiber.Ctx) error {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
-			Preload("DocumentList").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep").
 			Find(&billing, &models.Billing{StatusID: c.Query("status_id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
@@ -161,7 +170,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if err := configs.Store.
 		Preload("Status").
 		Preload("VendorGroup").
-		Preload("DocumentList").
+		Preload("DocumentList.DocumentList").
+		Preload("BillingStep").
 		Find(&billing).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusNotFound).JSON(&r)
@@ -211,6 +221,25 @@ func PostBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
 
+	var step []models.StepTitle
+	if err := configs.Store.Find(&step).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
+	for _, step := range step {
+		var billinStep models.BillingStatus
+		billinStep.StepTitleID = &step.ID
+		billinStep.BillingID = &billing.ID
+		if err := configs.Store.FirstOrCreate(&billinStep, &models.BillingStatus{
+			StepTitleID: &step.ID,
+			BillingID:   &billing.ID,
+		}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+	}
+
 	billing.Status = &status
 	billing.VendorGroup = &vendorGroup
 	r.Message = "Created successfully"
@@ -220,23 +249,23 @@ func PostBilling(c *fiber.Ctx) error {
 
 func PutBilling(c *fiber.Ctx) error {
 	var r models.Response
-	var frm models.Billing
+	var frm models.FrmUpdateBilling
 	if err := c.BodyParser(&frm); err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusBadRequest).JSON(&r)
 	}
 
 	var status models.Status
-	if err := configs.Store.First(&status, &models.Status{Title: frm.StatusID}).Error; err != nil {
+	if err := configs.Store.First(&status, &models.Status{Title: frm.Status}).Error; err != nil {
 		r.Message = fmt.Sprintf("Status: %v", err.Error())
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
-	var vendorGroup models.VendorGroup
-	if err := configs.Store.First(&vendorGroup, &models.VendorGroup{ID: frm.VendorGroupID}).Error; err != nil {
-		r.Message = fmt.Sprintf("Vendor Group: %v", err.Error())
-		return c.Status(fiber.StatusNotFound).JSON(&r)
-	}
+	// var vendorGroup models.VendorGroup
+	// if err := configs.Store.First(&vendorGroup, &models.VendorGroup{ID: frm.VendorGroupID}).Error; err != nil {
+	// 	r.Message = fmt.Sprintf("Vendor Group: %v", err.Error())
+	// 	return c.Status(fiber.StatusNotFound).JSON(&r)
+	// }
 
 	var billing models.Billing
 	if err := configs.Store.First(&billing, &models.Billing{ID: c.Params("id")}).Error; err != nil {
@@ -244,27 +273,51 @@ func PutBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
-	billing.BillingNo = strings.ToUpper(frm.BillingNo)
-	billing.BillingDate = frm.BillingDate
-	billing.DueDate = frm.DueDate
-	billing.Amount = frm.Amount
-	billing.VendorCode = strings.ToUpper(frm.VendorCode)
-	billing.VendorName = strings.ToUpper(frm.VendorName)
+	// billing.BillingNo = strings.ToUpper(frm.BillingNo)
+	// billing.BillingDate = frm.BillingDate
+	// billing.DueDate = frm.DueDate
+	// billing.Amount = frm.Amount
+	// billing.VendorCode = strings.ToUpper(frm.VendorCode)
+	// billing.VendorName = strings.ToUpper(frm.VendorName)
 	// if frm.PaymentDate != "" {
 	// 	billing.PaymentDate = frm.PaymentDate
 	// }
-	billing.Detail = frm.Detail
+	// billing.Detail = frm.Detail
 	billing.StatusID = status.ID
-	billing.VendorGroupID = frm.VendorGroupID
-	billing.IsActive = frm.IsActive
+	// billing.VendorGroupID = frm.VendorGroupID
+	// billing.IsActive = frm.IsActive
 
 	if err := configs.Store.Save(&billing).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
 
+	/// Update billing step
+	var step models.StepTitle
+	if err := configs.Store.First(&step, &models.StepTitle{Title: frm.Step}).Error; err != nil {
+		r.Message = fmt.Sprintf("Step Title %s", frm.Step)
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
+
+	var billingStatus models.BillingStatus
+	billingStatus.StepTitleID = &step.ID
+	billingStatus.BillingID = &billing.ID
+	if err := configs.Store.FirstOrCreate(&billingStatus, &models.BillingStatus{
+		StepTitleID: &step.ID,
+		BillingID:   &billing.ID,
+	}).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
+	billingStatus.IsComplete = true
+	if err := configs.Store.Save(&billingStatus).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusInternalServerError).JSON(&r)
+	}
+
 	billing.Status = &status
-	billing.VendorGroup = &vendorGroup
+	// billing.VendorGroup = &vendorGroup
 	r.Message = "Updated successfully"
 	r.Data = &billing
 	return c.Status(fiber.StatusOK).JSON(&r)
