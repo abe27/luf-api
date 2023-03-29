@@ -103,4 +103,11 @@ func SetUpRouter(c *fiber.App) {
 	billinStep.Post("", controllers.PostBillingStep)
 	billinStep.Put("/:id", controllers.PutBillingStep)
 	billinStep.Delete("/:id", controllers.DeleteBillingStep)
+
+	// Billing Document
+	billinRequire := auth.Group("/billing/require")
+	billinRequire.Get("", controllers.GetBillingRequireDocument)
+	billinRequire.Post("", controllers.PostBillingRequireDocument)
+	billinRequire.Put("/:id", controllers.PutBillingRequireDocument)
+	billinRequire.Delete("/:id", controllers.DeleteBillingRequireDocument)
 }

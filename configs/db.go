@@ -60,6 +60,10 @@ func SetDB() {
 	if !Store.Migrator().HasTable(&models.BillingStatus{}) {
 		Store.AutoMigrate(&models.BillingStatus{})
 	}
+
+	if !Store.Migrator().HasTable(&models.BillingRequiredDocument{}) {
+		Store.AutoMigrate(&models.BillingRequiredDocument{})
+	}
 }
 
 func DBSeed() {

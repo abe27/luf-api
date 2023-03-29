@@ -207,6 +207,23 @@ type FrmUpdateBilling struct {
 	Step   string `json:"step" form:"step"`     // billing_step
 }
 
+type BillingRequiredDocument struct {
+	ID           string        `gorm:"primaryKey;size:21;" json:"id"`
+	BillingID    *string       `json:"billing_id" form:"billing_id"`
+	DocumentID   *string       `json:"document_id" form:"document_id"`
+	IsActive     bool          `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	CreatedAt    time.Time     `json:"created_at" default:"now"`
+	UpdatedAt    time.Time     `json:"updated_at" default:"now"`
+	Billing      *Billing      `gorm:"foreignKey:BillingID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"billing"`
+	DocumentList *DocumentList `gorm:"foreignKey:DocumentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"document"`
+}
+
+func (obj *BillingRequiredDocument) BeforeCreate(tx *gorm.DB) (err error) {
+	id, _ := g.New()
+	obj.ID = id
+	return
+}
+
 type BillingDocument struct {
 	ID           string        `gorm:"primaryKey;size:21;" json:"id"`
 	FileName     string        `gorm:"not null" json:"file_name" form:"file_name"`
