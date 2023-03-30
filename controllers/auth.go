@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/abe27/luckyapp/configs"
 	"github.com/abe27/luckyapp/models"
@@ -17,17 +18,17 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
 
-	if len(frm.UserName) <= 0 {
+	if len(strings.TrimSpace(strings.ToLower(frm.UserName))) <= 0 {
 		r.Message = "Please enter UserName!"
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
 
-	if len(frm.Password) <= 0 {
+	if len(strings.TrimSpace(frm.Password)) <= 0 {
 		r.Message = "Please enter Password!"
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
 
-	if len(frm.Email) <= 0 {
+	if len(strings.TrimSpace(strings.ToLower(frm.Email))) <= 0 {
 		r.Message = "Please enter Email!"
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
