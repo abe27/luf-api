@@ -18,7 +18,7 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
 
-	if len(strings.TrimSpace(strings.ToLower(frm.UserName))) <= 0 {
+	if len(strings.TrimSpace(frm.UserName)) <= 0 {
 		r.Message = "Please enter UserName!"
 		return c.Status(fiber.StatusNotAcceptable).JSON(&r)
 	}
@@ -53,9 +53,9 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	var user models.User
-	user.UserName = frm.UserName
+	user.UserName = strings.ToLower(frm.UserName)
 	user.FullName = frm.FullName
-	user.Email = frm.Email
+	user.Email = strings.ToLower(frm.Email)
 	user.Company = frm.Company
 	user.Password = password
 	user.RoleID = &role.ID
