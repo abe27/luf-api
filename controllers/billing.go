@@ -137,6 +137,22 @@ func GetBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(&r)
 	}
 
+	if c.Query("due_date") != "" && c.Query("due_date") != "null" {
+		ftime, _ := time.Parse("2006-01-02", c.Query("due_date"))
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep.StepTitle").
+			Find(&billing, &models.Billing{DueDate: ftime}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
 	if c.Query("vendor_group") != "" && c.Query("vendor_group") != "null" {
 		if err := configs.Store.
 			Preload("Status").
@@ -159,6 +175,38 @@ func GetBilling(c *fiber.Ctx) error {
 			Preload("DocumentList.DocumentList").
 			Preload("BillingStep.StepTitle").
 			Find(&billing, &models.Billing{StatusID: c.Query("status_id")}).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
+	if c.Query("vendor_code") != "" {
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep.StepTitle").
+			Where("vendor_code like ?", "%"+c.Query("vendor_code")+"%").
+			Find(&billing).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
+	if c.Query("vendor_name") != "" {
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep.StepTitle").
+			Where("vendor_name like ?", "%"+c.Query("vendor_name")+"%").
+			Find(&billing).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
