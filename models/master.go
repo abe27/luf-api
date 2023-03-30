@@ -209,8 +209,8 @@ type FrmUpdateBilling struct {
 
 type BillingRequiredDocument struct {
 	ID           string        `gorm:"primaryKey;size:21;" json:"id"`
-	BillingID    *string       `json:"billing_id" form:"billing_id"`
-	DocumentID   *string       `json:"document_id" form:"document_id"`
+	BillingID    string        `json:"billing_id" form:"billing_id"`
+	DocumentID   string        `json:"document_id" form:"document_id"`
 	IsActive     bool          `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt    time.Time     `json:"created_at" default:"now"`
 	UpdatedAt    time.Time     `json:"updated_at" default:"now"`
@@ -288,4 +288,14 @@ type AuthSession struct {
 type UserLoginForm struct {
 	UserName string `json:"username"`
 	Password string `json:"password"`
+}
+
+type FrmReject struct {
+	Remark string            `json:"remark"`
+	Reason []FrmRejectReason `json:"reason"`
+}
+
+type FrmRejectReason struct {
+	ID      string `json:"id"`
+	Checked bool   `json:"checked"`
 }

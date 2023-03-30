@@ -107,7 +107,9 @@ func SetUpRouter(c *fiber.App) {
 	// Billing Document
 	billinRequire := auth.Group("/billing/require")
 	billinRequire.Get("", controllers.GetBillingRequireDocument)
-	billinRequire.Post("", controllers.PostBillingRequireDocument)
+	billinRequire.Post("/:id", controllers.PostBillingRequireDocument)
 	billinRequire.Put("/:id", controllers.PutBillingRequireDocument)
 	billinRequire.Delete("/:id", controllers.DeleteBillingRequireDocument)
+	// Billing Approve
+	auth.Put("/billing/approve/:id", controllers.BillingApprove)
 }
