@@ -337,3 +337,8 @@ func (obj *VendorGroupHistory) BeforeCreate(tx *gorm.DB) (err error) {
 	obj.ID = id
 	return
 }
+
+type SumVendorGroupHistory struct {
+	Title  string  `json:"title"`
+	Detail *Status `json:"Detail"`
+}

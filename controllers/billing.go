@@ -9,6 +9,7 @@ import (
 	"github.com/abe27/luckyapp/models"
 	"github.com/abe27/luckyapp/services"
 	"github.com/gofiber/fiber/v2"
+	"github.com/ledongthuc/goterators"
 	g "github.com/matoous/go-nanoid/v2"
 	"github.com/shakinm/xlsReader/xls"
 )
@@ -568,15 +569,24 @@ func BillingApprove(c *fiber.Ctx) error {
 func GetBillingLogger(c *fiber.Ctx) error {
 	var r models.Response
 	var billingHistory []models.VendorGroupHistory
-	if err := configs.Store.Preload("Status").Preload("Billing").Find(&billingHistory, &models.VendorGroupHistory{VendorGroupID: c.Params("vendor_group")}).Error; err != nil {
+	if err := configs.Store.Select("status_id").Preload("Status").Preload("Billing").Find(&billingHistory, &models.VendorGroupHistory{VendorGroupID: c.Params("vendor_group")}).Error; err != nil {
 		r.Message = fmt.Sprintf("Notfound ID: %s", c.Params("vendor_group"))
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
+	var data []map[string]interface{}
 	for _, b := range billingHistory {
-		fmt.Println(b.Status.Title)
+		obj := map[string]interface{}{
+			"title":  b.Status.Title,
+			"detail": b.Status,
+		}
+		data = append(data, obj)
 	}
+
+	groups := goterators.Group(data, func(item map[string]interface{}) string {
+		return item["title"].(string)
+	})
 	r.Message = "Get Data Successfuly!"
-	r.Data = &billingHistory
+	r.Data = &groups
 	return c.Status(fiber.StatusOK).JSON(&r)
 }
