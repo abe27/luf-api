@@ -64,6 +64,10 @@ func SetDB() {
 	if !Store.Migrator().HasTable(&models.BillingRequiredDocument{}) {
 		Store.AutoMigrate(&models.BillingRequiredDocument{})
 	}
+
+	if !Store.Migrator().HasTable(&models.VendorGroupHistory{}) {
+		Store.AutoMigrate(&models.VendorGroupHistory{})
+	}
 }
 
 func DBSeed() {
@@ -169,22 +173,39 @@ func DBSeed() {
 		}
 	}
 
-	// userData, _ := services.ReadJson("public/mock/user.json")
-	// var user []models.User
-	// json.Unmarshal(userData, &user)
-	// for _, u := range user {
-	// 	password := services.HashingPassword(u.Password)
-	// 	isMatch := services.CheckPasswordHashing(u.Password, password)
-	// 	if isMatch {
-	// 		var r models.Role
-	// 		if err := Store.First(&r, &models.Role{Title: *u.RoleID}).Error; err != nil {
-	// 			panic(err)
-	// 		}
-	// 		u.RoleID = &r.ID
-	// 		u.Password = password
-	// 		if err := Store.FirstOrCreate(&u, &models.User{UserName: u.UserName}).Error; err != nil {
-	// 			panic(err)
-	// 		}
-	// 	}
-	// }
+	userData, _ := services.ReadJson("public/mock/user.json")
+	var user []models.FrmUserSeed
+	json.Unmarshal(userData, &user)
+	for _, u := range user {
+		password := services.HashingPassword(u.Password)
+		isMatch := services.CheckPasswordHashing(u.Password, password)
+		if isMatch {
+			var r models.Role
+			if err := Store.First(&r, &models.Role{Title: *u.RoleID}).Error; err != nil {
+				panic(err)
+			}
+			u.RoleID = &r.ID
+
+			var vendorGroup models.VendorGroup
+			if err := Store.First(&vendorGroup, &models.VendorGroup{Title: *u.VendorGroupID}).Error; err != nil {
+				panic(err)
+			}
+			u.VendorGroupID = &vendorGroup.ID
+			u.Password = password
+
+			var user models.User
+			user.UserName = u.UserName
+			user.FullName = u.FullName
+			user.Email = u.Email
+			user.Company = u.Company
+			user.Password = u.Password
+			user.RoleID = u.RoleID
+			user.VendorGroupID = u.VendorGroupID
+			// user.AvatarURL = nil
+			user.IsActive = true
+			if err := Store.FirstOrCreate(&user, &models.User{UserName: u.UserName}).Error; err != nil {
+				panic(err)
+			}
+		}
+	}
 }

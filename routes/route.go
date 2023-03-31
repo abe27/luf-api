@@ -14,6 +14,7 @@ func SetUpRouter(c *fiber.App) {
 
 	// Test sendMail
 	r.Get("/test", controllers.TestSendMail)
+	r.Get("/token", controllers.TestGetUserID)
 
 	// LogIn API routes
 	u := r.Group("/auth")

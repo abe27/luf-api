@@ -10,6 +10,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func TestGetUserID(c *fiber.Ctx) error {
+	var r models.Response
+	s := c.Get("Authorization")
+	token := strings.TrimPrefix(s, "Bearer ")
+	obj, err := services.ValidateToken(token)
+	if err != nil {
+		return c.Status(500).SendString(err.Error())
+	}
+
+	r.Data = &obj
+	r.Message = token
+	return c.Status(fiber.StatusOK).JSON(&r)
+}
+
 func Register(c *fiber.Ctx) error {
 	var r models.Response
 	var frm models.User
@@ -52,6 +66,13 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
+	fmt.Println(*frm.VendorGroupID)
+	var vendor models.VendorGroup
+	if err := configs.Store.Find(&vendor, &models.VendorGroup{Title: *frm.VendorGroupID}).Error; err != nil {
+		r.Message = err.Error()
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
+
 	var user models.User
 	user.UserName = strings.ToLower(frm.UserName)
 	user.FullName = frm.FullName
@@ -59,6 +80,7 @@ func Register(c *fiber.Ctx) error {
 	user.Company = frm.Company
 	user.Password = password
 	user.RoleID = &role.ID
+	user.VendorGroupID = &vendor.ID
 
 	// Upload GEDI File To Directory
 	file, err := c.FormFile("avatar")
@@ -88,7 +110,7 @@ func Login(c *fiber.Ctx) error {
 	// Check AuthorizationRequired
 	db := configs.Store
 	var userData models.User
-	if err := db.Preload("Role").Where("username=?", user.UserName).First(&userData).Error; err != nil {
+	if err := db.Preload("Role").Preload("VendorGroup").Where("username=?", user.UserName).First(&userData).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
@@ -123,7 +145,7 @@ func GetMember(c *fiber.Ctx) error {
 	var r models.Response
 	if c.Query("id") != "" {
 		var member models.User
-		if err := configs.Store.Preload("Role").Find(&member, &models.User{ID: c.Query("id")}).Error; err != nil {
+		if err := configs.Store.Preload("Role").Preload("VendorGroup").Find(&member, &models.User{ID: c.Query("id")}).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -133,7 +155,7 @@ func GetMember(c *fiber.Ctx) error {
 
 	if c.Query("username") != "" {
 		var member []models.User
-		if err := configs.Store.Preload("Role").Where("username like ?", "%"+c.Query("username")+"%").Find(&member).Error; err != nil {
+		if err := configs.Store.Preload("Role").Preload("VendorGroup").Where("username like ?", "%"+c.Query("username")+"%").Find(&member).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -143,7 +165,7 @@ func GetMember(c *fiber.Ctx) error {
 
 	if c.Query("name") != "" {
 		var member []models.User
-		if err := configs.Store.Preload("Role").Where("full_name like ?", "%"+c.Query("name")+"%").Find(&member).Error; err != nil {
+		if err := configs.Store.Preload("Role").Preload("VendorGroup").Where("full_name like ?", "%"+c.Query("name")+"%").Find(&member).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -153,7 +175,7 @@ func GetMember(c *fiber.Ctx) error {
 
 	if c.Query("role") != "" {
 		var member []models.User
-		if err := configs.Store.Preload("Role").Where("full_name like ?", "%"+c.Query("name")+"%").Find(&member).Error; err != nil {
+		if err := configs.Store.Preload("Role").Preload("VendorGroup").Where("full_name like ?", "%"+c.Query("name")+"%").Find(&member).Error; err != nil {
 			r.Message = err.Error()
 			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
@@ -162,7 +184,7 @@ func GetMember(c *fiber.Ctx) error {
 	}
 
 	var member []models.User
-	if err := configs.Store.Preload("Role").Find(&member).Error; err != nil {
+	if err := configs.Store.Preload("Role").Preload("VendorGroup").Find(&member).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}

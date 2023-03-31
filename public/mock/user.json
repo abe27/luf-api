@@ -5,6 +5,7 @@
         "email": "admin@localhost.com",
         "password": "admin@1234",
         "role_id": "Administrator",
+        "vendor_group_id": "-",
         "avatar_url": "-",
         "is_active": true
     },
@@ -14,6 +15,17 @@
         "email": "vendor001@localhost.com",
         "password": "vendor@1234",
         "role_id": "Vendor",
+        "vendor_group_id": "Vendor001",
+        "avatar_url": "-",
+        "is_active": true
+    },
+    {
+        "username": "vendor002",
+        "full_name": "Vendor 002",
+        "email": "vendor002@localhost.com",
+        "password": "vendor@1234",
+        "role_id": "Vendor",
+        "vendor_group_id": "Vendor002",
         "avatar_url": "-",
         "is_active": true
     }

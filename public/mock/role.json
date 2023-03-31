@@ -1,12 +1,12 @@
 [
     {
         "title": "Administrator",
-        "description": "-",
+        "description": "Manangement System",
         "is_active": true
     },
     {
         "title": "Vendor",
-        "description": "-",
+        "description": "Upload File",
         "is_active": true
     }
 ]

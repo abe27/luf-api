@@ -7,10 +7,30 @@ import (
 
 	"github.com/abe27/luckyapp/configs"
 	"github.com/abe27/luckyapp/models"
+	"github.com/abe27/luckyapp/services"
 	"github.com/gofiber/fiber/v2"
 	g "github.com/matoous/go-nanoid/v2"
 	"github.com/shakinm/xlsReader/xls"
 )
+
+func CreateVendorLogger(billing, status, vendorGroup *string, c *fiber.Ctx) {
+	s := c.Get("Authorization")
+	token := strings.TrimPrefix(s, "Bearer ")
+	userID, err := services.ValidateToken(token)
+	if err != nil {
+		panic(err)
+	}
+
+	var vendorHistory models.VendorGroupHistory
+	vendorHistory.VendorGroupID = *vendorGroup
+	vendorHistory.UserID = fmt.Sprintf("%v", userID)
+	vendorHistory.BillingID = *billing
+	vendorHistory.StatusID = *status
+	vendorHistory.IsActive = true
+	if err := configs.Store.Create(&vendorHistory).Error; err != nil {
+		panic(err)
+	}
+}
 
 func GetBilling(c *fiber.Ctx) error {
 	var r models.Response
@@ -32,6 +52,26 @@ func GetBilling(c *fiber.Ctx) error {
 	}
 
 	var billing []models.Billing
+
+	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" && c.Query("vendor_group") != "" {
+		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep.StepTitle").
+			Where("billing_no like ?", "%"+c.Query("billing_no")+"%").
+			Where("billing_date", ftime).
+			Where("status_id", c.Query("status_id")).
+			Where("vendor_group_id", c.Query("vendor_group")).
+			Find(&billing).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
 
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
@@ -153,7 +193,24 @@ func GetBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(&r)
 	}
 
-	if c.Query("vendor_group") != "" && c.Query("vendor_group") != "null" {
+	if c.Query("status_id") != "" && c.Query("vendor_group") != "" {
+		if err := configs.Store.
+			Preload("Status").
+			Preload("VendorGroup").
+			Preload("DocumentList.DocumentList").
+			Preload("BillingStep.StepTitle").
+			Where("status_id", c.Query("status_id")).
+			Where("vendor_group_id", c.Query("vendor_group")).
+			Find(&billing).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusNotFound).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &billing
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
+	if c.Query("vendor_group") != "" {
 		if err := configs.Store.
 			Preload("Status").
 			Preload("VendorGroup").
@@ -288,6 +345,9 @@ func PostBilling(c *fiber.Ctx) error {
 		}
 	}
 
+	// loging
+	CreateVendorLogger(&billing.ID, &status.ID, &vendorGroup.ID, c)
+
 	billing.Status = &status
 	billing.VendorGroup = &vendorGroup
 	r.Message = "Created successfully"
@@ -363,6 +423,9 @@ func PutBilling(c *fiber.Ctx) error {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
+
+	// loging
+	CreateVendorLogger(&billing.ID, &status.ID, &billing.VendorGroupID, c)
 
 	billing.Status = &status
 	// billing.VendorGroup = &vendorGroup
@@ -495,6 +558,8 @@ func BillingApprove(c *fiber.Ctx) error {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
+	// loging
+	CreateVendorLogger(&billing.ID, &status.ID, &billing.VendorGroupID, c)
 	configs.Store.Delete(&models.BillingRequiredDocument{BillingID: c.Params("id")})
 	r.Message = "Upload Data Successfuly!"
 	return c.Status(fiber.StatusOK).JSON(&r)

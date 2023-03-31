@@ -32,6 +32,17 @@ func GetStatus(c *fiber.Ctx) error {
 		r.Data = &obj
 		return c.Status(fiber.StatusOK).JSON(&r)
 	}
+
+	if c.Query("vendor_group") != "" {
+		if err := configs.Store.Order("seq").Preload("Billing", "vendor_group_id=?", c.Query("vendor_group")).Find(&obj).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+		r.Message = "Show All"
+		r.Data = &obj
+		return c.Status(fiber.StatusOK).JSON(&r)
+	}
+
 	if err := configs.Store.Order("seq").Preload("Billing.VendorGroup").Find(&obj).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)

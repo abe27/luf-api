@@ -155,24 +155,37 @@ func (obj *RoleDetail) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 type User struct {
-	ID        string    `gorm:"primaryKey;size:21;" json:"id"`
-	UserName  string    `gorm:"not null;column:username;index;unique;size:50" json:"username" form:"username" binding:"required,min:5"`
-	FullName  string    `json:"full_name" form:"full_name" binding:"required"`
-	Email     string    `gorm:"not null;unique;size:50;" json:"email" form:"email" binding:"required"`
-	Company   string    `json:"company" form:"company" binding:"required"`
-	Password  string    `gorm:"not null;unique;size:60;" json:"-" form:"password" binding:"required,min:6"`
-	RoleID    *string   `json:"role_id" form:"role_id"`
-	AvatarURL string    `json:"avatar_url" form:"avatar_url"`
-	IsActive  bool      `gorm:"null" json:"is_active" form:"is_active" default:"false"`
-	CreatedAt time.Time `json:"created_at" default:"now"`
-	UpdatedAt time.Time `json:"updated_at" default:"now"`
-	Role      *Role     `gorm:"foreignKey:RoleID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"role"`
+	ID            string       `gorm:"primaryKey;size:21;" json:"id"`
+	UserName      string       `gorm:"not null;column:username;index;unique;size:50" json:"username" form:"username" binding:"required,min:5"`
+	FullName      string       `json:"full_name" form:"full_name" binding:"required"`
+	Email         string       `gorm:"not null;unique;size:50;" json:"email" form:"email" binding:"required"`
+	Company       string       `json:"company" form:"company" binding:"required"`
+	Password      string       `gorm:"not null;unique;size:60;" json:"-" form:"password" binding:"required,min:6"`
+	RoleID        *string      `json:"role_id" form:"role_id"`
+	VendorGroupID *string      `json:"vendor_group_id" form:"vendor_group_id"`
+	AvatarURL     string       `json:"avatar_url" form:"avatar_url"`
+	IsActive      bool         `gorm:"null" json:"is_active" form:"is_active" default:"false"`
+	CreatedAt     time.Time    `json:"created_at" default:"now"`
+	UpdatedAt     time.Time    `json:"updated_at" default:"now"`
+	Role          *Role        `gorm:"foreignKey:RoleID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"role"`
+	VendorGroup   *VendorGroup `gorm:"foreignKey:VendorGroupID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"vendor_group"`
 }
 
 func (obj *User) BeforeCreate(tx *gorm.DB) (err error) {
 	id, _ := g.New()
 	obj.ID = id
 	return
+}
+
+type FrmUserSeed struct {
+	UserName      string  `gorm:"not null;column:username;index;unique;size:50" json:"username" form:"username" binding:"required,min:5"`
+	FullName      string  `json:"full_name" form:"full_name" binding:"required"`
+	Email         string  `gorm:"not null;unique;size:50;" json:"email" form:"email" binding:"required"`
+	Company       string  `json:"company" form:"company" binding:"required"`
+	Password      string  `gorm:"not null;unique;size:60;" json:"password" form:"password" binding:"required,min:6"`
+	RoleID        *string `json:"role_id" form:"role_id"`
+	VendorGroupID *string `json:"vendor_group_id" form:"vendor_group_id"`
+	AvatarURL     string  `json:"avatar_url" form:"avatar_url"`
 }
 
 type Billing struct {
@@ -298,4 +311,29 @@ type FrmReject struct {
 type FrmRejectReason struct {
 	ID      string `json:"id"`
 	Checked bool   `json:"checked"`
+}
+
+type VendorGroupHistory struct {
+	ID            string       `gorm:"primaryKey;size:21;" json:"id"`
+	VendorGroupID string       `json:"vendor_group_id"`
+	UserID        string       `json:"user_id"`
+	BillingID     string       `json:"billing_id"`
+	StatusID      string       `json:"status_id"`
+	IsActive      bool         `json:"is_active"`
+	CreatedAt     time.Time    `json:"created_at" default:"now"`
+	UpdatedAt     time.Time    `json:"updated_at" default:"now"`
+	VendorGroup   *VendorGroup `gorm:"foreignKey:VendorGroupID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"vendor_group"`
+	User          *User        `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
+	Billing       *Billing     `gorm:"foreignKey:BillingID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"billing"`
+	Status        *Status      `gorm:"foreignKey:StatusID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"status"`
+}
+
+// func (VendorGroupLogStatus) TableName() string {
+// 	return "tbt_vendor_group"
+// }
+
+func (obj *VendorGroupHistory) BeforeCreate(tx *gorm.DB) (err error) {
+	id, _ := g.New()
+	obj.ID = id
+	return
 }

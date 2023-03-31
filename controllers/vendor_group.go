@@ -27,6 +27,7 @@ func GetVendorGroup(c *fiber.Ctx) error {
 		Preload("Documents.VendorGroup").
 		Preload("Documents.DocumentList").
 		Preload("Documents.Role").
+		Where("title <> ?", "-").
 		Find(&obj).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
