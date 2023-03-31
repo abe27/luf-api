@@ -564,3 +564,19 @@ func BillingApprove(c *fiber.Ctx) error {
 	r.Message = "Upload Data Successfuly!"
 	return c.Status(fiber.StatusOK).JSON(&r)
 }
+
+func GetBillingLogger(c *fiber.Ctx) error {
+	var r models.Response
+	var billingHistory []models.VendorGroupHistory
+	if err := configs.Store.Preload("Status").Preload("Billing").Find(&billingHistory, &models.VendorGroupHistory{VendorGroupID: c.Params("vendor_group")}).Error; err != nil {
+		r.Message = fmt.Sprintf("Notfound ID: %s", c.Params("vendor_group"))
+		return c.Status(fiber.StatusNotFound).JSON(&r)
+	}
+
+	for _, b := range billingHistory {
+		fmt.Println(b.Status.Title)
+	}
+	r.Message = "Get Data Successfuly!"
+	r.Data = &billingHistory
+	return c.Status(fiber.StatusOK).JSON(&r)
+}

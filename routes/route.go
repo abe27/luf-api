@@ -113,4 +113,5 @@ func SetUpRouter(c *fiber.App) {
 	billinRequire.Delete("/:id", controllers.DeleteBillingRequireDocument)
 	// Billing Approve
 	auth.Put("/billing/approve/:id", controllers.BillingApprove)
+	auth.Get("/billing/history", controllers.GetBillingLogger)
 }

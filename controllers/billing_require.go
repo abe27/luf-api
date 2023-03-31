@@ -49,6 +49,8 @@ func PostBillingRequireDocument(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
 
+	// loging
+	CreateVendorLogger(&billing.ID, &status.ID, &billing.VendorGroupID, c)
 	r.Message = "Update data successfully!"
 	return c.Status(fiber.StatusCreated).JSON(&r)
 }
@@ -81,6 +83,8 @@ func PutBillingRequireDocument(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
 	}
 
+	// loging
+	CreateVendorLogger(&billing.ID, &status.ID, &billing.VendorGroupID, c)
 	configs.Store.Delete(&models.BillingRequiredDocument{BillingID: c.Params("id")})
 	r.Message = "Update data successfully!"
 	return c.Status(fiber.StatusOK).JSON(&r)
