@@ -9,7 +9,6 @@ import (
 	"github.com/abe27/luckyapp/models"
 	"github.com/abe27/luckyapp/services"
 	"github.com/gofiber/fiber/v2"
-	"github.com/ledongthuc/goterators"
 	g "github.com/matoous/go-nanoid/v2"
 	"github.com/shakinm/xlsReader/xls"
 )
@@ -38,6 +37,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("id") != "" {
 		var billing models.Billing
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -57,6 +58,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" && c.Query("vendor_group") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -77,6 +80,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -95,6 +100,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("billing_no") != "" && c.Query("status_id") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -113,6 +120,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_date") != "" && c.Query("status_id") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -131,6 +140,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -148,6 +159,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("billing_no") != "" && c.Query("billing_no") != "null" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -165,6 +178,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_date") != "" && c.Query("billing_date") != "null" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -181,6 +196,8 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("due_date") != "" && c.Query("due_date") != "null" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("due_date"))
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -196,6 +213,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("status_id") != "" && c.Query("vendor_group") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -213,6 +232,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_group") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -228,6 +249,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("status_id") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -243,6 +266,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_code") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -259,6 +284,8 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_name") != "" {
 		if err := configs.Store.
+			Limit(50).
+			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
 			Preload("DocumentList.DocumentList").
@@ -274,6 +301,8 @@ func GetBilling(c *fiber.Ctx) error {
 	}
 
 	if err := configs.Store.
+		Limit(50).
+		Order("updated_at").
 		Preload("Status").
 		Preload("VendorGroup").
 		Preload("DocumentList.DocumentList").
@@ -568,25 +597,32 @@ func BillingApprove(c *fiber.Ctx) error {
 
 func GetBillingLogger(c *fiber.Ctx) error {
 	var r models.Response
-	var billingHistory []models.VendorGroupHistory
-	if err := configs.Store.Select("status_id").Preload("Status").Preload("Billing").Find(&billingHistory, &models.VendorGroupHistory{VendorGroupID: c.Params("vendor_group")}).Error; err != nil {
-		r.Message = fmt.Sprintf("Notfound ID: %s", c.Params("vendor_group"))
-		return c.Status(fiber.StatusNotFound).JSON(&r)
+	var status []models.Status
+	if err := configs.Store.Select("id,title").Order("seq").Find(&status).Error; err != nil {
+		r.Message = err.Error()
 	}
 
-	var data []map[string]interface{}
-	for _, b := range billingHistory {
-		obj := map[string]interface{}{
-			"title":  b.Status.Title,
-			"detail": b.Status,
+	var sumVendor []models.SumVendorGroupHistory
+	for _, s := range status {
+		var billingHistory []models.VendorGroupHistory
+		if err := configs.Store.Select("status_id,billing_id").Preload("Status").Preload("Billing").Find(&billingHistory, &models.VendorGroupHistory{VendorGroupID: c.Params("vendor_group"), StatusID: s.ID}).Error; err != nil {
+			r.Message = fmt.Sprintf("Notfound ID: %s", c.Params("vendor_group"))
+			return c.Status(fiber.StatusNotFound).JSON(&r)
 		}
-		data = append(data, obj)
+
+		var sum float64 = 0
+		for _, b := range billingHistory {
+			sum = sum + b.Billing.Amount
+		}
+
+		sumVendor = append(sumVendor, models.SumVendorGroupHistory{
+			Title: s.Title,
+			Count: len(billingHistory),
+			Sum:   sum,
+		})
 	}
 
-	groups := goterators.Group(data, func(item map[string]interface{}) string {
-		return item["title"].(string)
-	})
 	r.Message = "Get Data Successfuly!"
-	r.Data = &groups
+	r.Data = &sumVendor
 	return c.Status(fiber.StatusOK).JSON(&r)
 }
