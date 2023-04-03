@@ -31,7 +31,7 @@ func init() {
 
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 	// dsn := fmt.Sprintf("%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", os.Getenv("DBUSER"), os.Getenv("DBHOST"), os.Getenv("DBPORT"), os.Getenv("DBNAME"))
-	//   db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	//   db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 
 	// fmt.Printf("DNS: %s\n", dns)
 	configs.Store, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
