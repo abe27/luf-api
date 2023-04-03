@@ -20,6 +20,7 @@ func SetUpRouter(c *fiber.App) {
 	u := r.Group("/auth")
 	u.Post("/register", controllers.Register)
 	u.Post("/login", controllers.Login)
+	u.Get("/verify", controllers.Verify)
 
 	auth := r.Use(services.AuthorizationRequired)
 	auth.Get("/profile", controllers.Profile)

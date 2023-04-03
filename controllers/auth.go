@@ -100,6 +100,17 @@ func Register(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(&r)
 }
 
+func Verify(c *fiber.Ctx) error {
+	var r models.Response
+	s := c.Get("Authorization")
+	token := strings.TrimPrefix(s, "Bearer ")
+	if _, err := services.ValidateToken(token); err != nil {
+		r.Message = err.Error()
+		return c.Status(500).SendString(err.Error())
+	}
+	return c.Status(fiber.StatusOK).JSON(&r)
+}
+
 func Login(c *fiber.Ctx) error {
 	var r models.Response
 	var user models.UserLoginForm
