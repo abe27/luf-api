@@ -3,81 +3,24 @@ package services
 import (
 	"crypto/tls"
 	"fmt"
-	"log"
-	"net"
-	"net/mail"
-	"net/smtp"
 	"os"
+	"strconv"
+
+	mail "gopkg.in/mail.v2"
 )
 
-func SendMail(mail_to, Bbody string) {
-	from := mail.Address{Name: "tester", Address: os.Getenv("SMTP_USER")}
-	to := mail.Address{Name: "receive", Address: "krumii.it@gmail.com"}
-	subj := "This is the email subject"
-	body := "This is an example body.\n With two lines."
-
-	// Setup headers
-	headers := make(map[string]string)
-	headers["From"] = from.String()
-	headers["To"] = to.String()
-	headers["Subject"] = subj
-
-	// Setup message
-	message := ""
-	for k, v := range headers {
-		message += fmt.Sprintf("%s: %s\r\n", k, v)
+func SendMail(mail_to, subject, body string) {
+	m := mail.NewMessage()
+	m.SetHeader("From", os.Getenv("SMTP_USER"))
+	m.SetHeader("To", mail_to)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
+	port, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	d := mail.NewDialer(os.Getenv("SMTP_SERVER"), port, os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASSWORD"))
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	// Now send E-Mail
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		panic(err)
 	}
-	message += "\r\n" + body
-
-	// Connect to the SMTP Server
-	servername := fmt.Sprintf("%s:%s", os.Getenv("SMTP_SERVER"), os.Getenv("SMTP_PORT"))
-
-	host, _, _ := net.SplitHostPort(servername)
-
-	auth := smtp.PlainAuth("", os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASSWORD"), host)
-
-	// TLS config
-	tlsconfig := &tls.Config{
-		InsecureSkipVerify: true,
-		ServerName:         host,
-	}
-
-	c, err := smtp.Dial(servername)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	c.StartTLS(tlsconfig)
-
-	// Auth
-	if err = c.Auth(auth); err != nil {
-		log.Panic(err)
-	}
-
-	// To && From
-	if err = c.Mail(from.Address); err != nil {
-		log.Panic(err)
-	}
-
-	if err = c.Rcpt(to.Address); err != nil {
-		log.Panic(err)
-	}
-
-	// Data
-	w, err := c.Data()
-	if err != nil {
-		log.Panic(err)
-	}
-
-	_, err = w.Write([]byte(message))
-	if err != nil {
-		log.Panic(err)
-	}
-
-	err = w.Close()
-	if err != nil {
-		log.Panic(err)
-	}
-
-	c.Quit()
 }

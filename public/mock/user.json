@@ -2,7 +2,7 @@
     {
         "username": "admin",
         "full_name": "Administrator",
-        "email": "admin@localhost.com",
+        "email": "chulalak.tak@vcsthai.com",
         "password": "admin@1234",
         "role_id": "Administrator",
         "vendor_group_id": "-",
@@ -12,7 +12,7 @@
     {
         "username": "vendor001",
         "full_name": "Vendor 001",
-        "email": "vendor001@localhost.com",
+        "email": "krumii.it@gmail.com",
         "password": "vendor@1234",
         "role_id": "Vendor",
         "vendor_group_id": "Vendor001",
@@ -22,7 +22,7 @@
     {
         "username": "vendor002",
         "full_name": "Vendor 002",
-        "email": "vendor002@localhost.com",
+        "email": "parzival.yuenyang@hotmail.com",
         "password": "vendor@1234",
         "role_id": "Vendor",
         "vendor_group_id": "Vendor002",

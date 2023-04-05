@@ -72,6 +72,7 @@ type VendorGroup struct {
 	CreatedAt   time.Time `json:"created_at" default:"now"`
 	UpdatedAt   time.Time `json:"updated_at" default:"now"`
 	Documents   []*Vendor `json:"documents" form:"documents"`
+	User        []*User   `json:"user"`
 }
 
 func (obj *VendorGroup) BeforeCreate(tx *gorm.DB) (err error) {
