@@ -1,31 +1,83 @@
 package services
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
+	"net"
+	"net/mail"
 	"net/smtp"
 	"os"
 )
 
-func SendMail(mail_to, body string) {
-	from := os.Getenv("SMTP_USER")
-	pass := os.Getenv("SMTP_PASSWORD")
+func SendMail(mail_to, Bbody string) {
+	from := mail.Address{Name: "tester", Address: os.Getenv("SMTP_USER")}
+	to := mail.Address{Name: "receive", Address: "krumii.it@gmail.com"}
+	subj := "This is the email subject"
+	body := "This is an example body.\n With two lines."
 
-	fmt.Printf("%s: %s\n", from, pass)
+	// Setup headers
+	headers := make(map[string]string)
+	headers["From"] = from.String()
+	headers["To"] = to.String()
+	headers["Subject"] = subj
 
-	msg := "From: " + from + "\n" +
-		"To: " + mail_to + "\n" +
-		"Subject: Hello there\n\n" +
-		body
+	// Setup message
+	message := ""
+	for k, v := range headers {
+		message += fmt.Sprintf("%s: %s\r\n", k, v)
+	}
+	message += "\r\n" + body
 
-	err := smtp.SendMail(fmt.Sprintf("%s:%s", os.Getenv("SMTP_SERVER"), os.Getenv("SMTP_PORT")),
-		smtp.PlainAuth("", from, pass, os.Getenv("SMTP_SERVER")),
-		from, []string{mail_to}, []byte(msg))
+	// Connect to the SMTP Server
+	servername := fmt.Sprintf("%s:%s", os.Getenv("SMTP_SERVER"), os.Getenv("SMTP_PORT"))
 
-	if err != nil {
-		log.Printf("smtp error: %s", err)
-		return
+	host, _, _ := net.SplitHostPort(servername)
+
+	auth := smtp.PlainAuth("", os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASSWORD"), host)
+
+	// TLS config
+	tlsconfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         host,
 	}
 
-	log.Print("sent, visit http://foobarbazz.mailinator.com")
+	c, err := smtp.Dial(servername)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	c.StartTLS(tlsconfig)
+
+	// Auth
+	if err = c.Auth(auth); err != nil {
+		log.Panic(err)
+	}
+
+	// To && From
+	if err = c.Mail(from.Address); err != nil {
+		log.Panic(err)
+	}
+
+	if err = c.Rcpt(to.Address); err != nil {
+		log.Panic(err)
+	}
+
+	// Data
+	w, err := c.Data()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	_, err = w.Write([]byte(message))
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	c.Quit()
 }
