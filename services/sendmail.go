@@ -3,6 +3,7 @@ package services
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
@@ -21,6 +22,6 @@ func SendMail(mail_to, subject, body string) {
 	// Now send E-Mail
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
-		panic(err)
+		log.Fatalln(err)
 	}
 }

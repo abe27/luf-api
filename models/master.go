@@ -165,6 +165,7 @@ type User struct {
 	RoleID        *string      `json:"role_id" form:"role_id"`
 	VendorGroupID *string      `json:"vendor_group_id" form:"vendor_group_id"`
 	AvatarURL     string       `json:"avatar_url" form:"avatar_url"`
+	IsAdmin       bool         `gorm:"null" json:"is_admin" form:"is_admin" default:"false"`
 	IsActive      bool         `gorm:"null" json:"is_active" form:"is_active" default:"false"`
 	CreatedAt     time.Time    `json:"created_at" default:"now"`
 	UpdatedAt     time.Time    `json:"updated_at" default:"now"`
