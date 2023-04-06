@@ -377,6 +377,7 @@ func PostBilling(c *fiber.Ctx) error {
 
 	// loging
 	CreateVendorLogger(&billing.ID, &status.ID, &vendorGroup.ID, c)
+	SendMailBillingStatus(vendorGroup.ID, &billing, &status)
 
 	billing.Status = &status
 	billing.VendorGroup = &vendorGroup
@@ -399,32 +400,13 @@ func PutBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
-	// var vendorGroup models.VendorGroup
-	// if err := configs.Store.First(&vendorGroup, &models.VendorGroup{ID: frm.VendorGroupID}).Error; err != nil {
-	// 	r.Message = fmt.Sprintf("Vendor Group: %v", err.Error())
-	// 	return c.Status(fiber.StatusNotFound).JSON(&r)
-	// }
-
 	var billing models.Billing
 	if err := configs.Store.First(&billing, &models.Billing{ID: c.Params("id")}).Error; err != nil {
 		r.Message = fmt.Sprintf("Notfound ID: %s", c.Params("id"))
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
-	// billing.BillingNo = strings.ToUpper(frm.BillingNo)
-	// billing.BillingDate = frm.BillingDate
-	// billing.DueDate = frm.DueDate
-	// billing.Amount = frm.Amount
-	// billing.VendorCode = strings.ToUpper(frm.VendorCode)
-	// billing.VendorName = strings.ToUpper(frm.VendorName)
-	// if frm.PaymentDate != "" {
-	// 	billing.PaymentDate = frm.PaymentDate
-	// }
-	// billing.Detail = frm.Detail
 	billing.StatusID = status.ID
-	// billing.VendorGroupID = frm.VendorGroupID
-	// billing.IsActive = frm.IsActive
-
 	if err := configs.Store.Save(&billing).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
@@ -456,11 +438,10 @@ func PutBilling(c *fiber.Ctx) error {
 
 	// loging
 	CreateVendorLogger(&billing.ID, &status.ID, &billing.VendorGroupID, c)
-
+	SendMailBillingStatus(billing.VendorGroupID, &billing, &status)
 	billing.Status = &status
-	// billing.VendorGroup = &vendorGroup
 	r.Message = "Updated successfully"
-	r.Data = &billing
+	// r.Data = &billing
 	return c.Status(fiber.StatusOK).JSON(&r)
 }
 
