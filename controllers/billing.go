@@ -16,10 +16,7 @@ import (
 func CreateVendorLogger(billing, status, vendorGroup *string, c *fiber.Ctx) {
 	s := c.Get("Authorization")
 	token := strings.TrimPrefix(s, "Bearer ")
-	userID, err := services.ValidateToken(token)
-	if err != nil {
-		panic(err)
-	}
+	userID, _ := services.ValidateToken(token)
 
 	var vendorHistory models.VendorGroupHistory
 	vendorHistory.VendorGroupID = *vendorGroup
@@ -27,9 +24,7 @@ func CreateVendorLogger(billing, status, vendorGroup *string, c *fiber.Ctx) {
 	vendorHistory.BillingID = *billing
 	vendorHistory.StatusID = *status
 	vendorHistory.IsActive = true
-	if err := configs.Store.Create(&vendorHistory).Error; err != nil {
-		panic(err)
-	}
+	configs.Store.Create(&vendorHistory)
 }
 
 func GetBilling(c *fiber.Ctx) error {

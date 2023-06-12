@@ -13,10 +13,7 @@ import (
 )
 
 func HashingPassword(password string) string {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		panic(err)
-	}
+	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes)
 }
 
@@ -33,10 +30,7 @@ func CreateToken(user models.User) models.AuthSession {
 	claims["sub"] = obj.JwtToken
 	claims["name"] = user.ID
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
-	tokenKey, err := token.SignedString([]byte(secret_key))
-	if err != nil {
-		panic(err)
-	}
+	tokenKey, _ := token.SignedString([]byte(secret_key))
 
 	obj.Header = "Authorization"
 	obj.JwtType = "Bearer"
