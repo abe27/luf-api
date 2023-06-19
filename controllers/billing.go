@@ -448,6 +448,25 @@ func DeleteBilling(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(&r)
 	}
 
+	// Delete Doc
+	var docList []models.BillingDocument
+	if err := configs.Store.Find(&docList, &models.BillingDocument{BillingID: &billing.ID}).Error; err == nil {
+		if err := configs.Store.Delete(&docList).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+
+	}
+
+	// Delete Billing Step
+	var step []models.BillingStatus
+	if err := configs.Store.Find(&step, &models.BillingStatus{BillingID: &billing.ID}).Error; err == nil {
+		if err := configs.Store.Delete(&step).Error; err != nil {
+			r.Message = err.Error()
+			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		}
+	}
+
 	if err := configs.Store.Delete(&billing).Error; err != nil {
 		r.Message = err.Error()
 		return c.Status(fiber.StatusInternalServerError).JSON(&r)
