@@ -32,7 +32,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("id") != "" {
 		var billing models.Billing
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -53,7 +53,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" && c.Query("vendor_group") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -75,7 +75,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" && c.Query("status_id") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -95,7 +95,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("billing_no") != "" && c.Query("status_id") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -115,7 +115,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_date") != "" && c.Query("status_id") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -135,7 +135,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_no") != "" && c.Query("billing_date") != "" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -154,7 +154,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("billing_no") != "" && c.Query("billing_no") != "null" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -173,7 +173,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("billing_date") != "" && c.Query("billing_date") != "null" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("billing_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -191,7 +191,7 @@ func GetBilling(c *fiber.Ctx) error {
 	if c.Query("due_date") != "" && c.Query("due_date") != "null" {
 		ftime, _ := time.Parse("2006-01-02", c.Query("due_date"))
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -208,7 +208,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("status_id") != "" && c.Query("vendor_group") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -227,7 +227,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_group") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -244,7 +244,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("status_id") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -261,7 +261,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_code") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -279,7 +279,7 @@ func GetBilling(c *fiber.Ctx) error {
 
 	if c.Query("vendor_name") != "" {
 		if err := configs.Store.
-			Limit(50).
+			Limit(100).
 			Order("updated_at").
 			Preload("Status").
 			Preload("VendorGroup").
@@ -296,7 +296,7 @@ func GetBilling(c *fiber.Ctx) error {
 	}
 
 	if err := configs.Store.
-		Limit(50).
+		Limit(100).
 		Order("updated_at").
 		Preload("Status").
 		Preload("VendorGroup").
