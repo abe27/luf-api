@@ -451,9 +451,11 @@ func DeleteBilling(c *fiber.Ctx) error {
 	// Delete Doc
 	var docList []models.BillingDocument
 	if err := configs.Store.Find(&docList, &models.BillingDocument{BillingID: &billing.ID}).Error; err == nil {
-		if err := configs.Store.Delete(&docList).Error; err != nil {
-			r.Message = err.Error()
-			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		if len(docList) > 0 {
+			if err := configs.Store.Delete(&docList).Error; err != nil {
+				r.Message = err.Error()
+				return c.Status(fiber.StatusInternalServerError).JSON(&r)
+			}
 		}
 
 	}
@@ -461,9 +463,11 @@ func DeleteBilling(c *fiber.Ctx) error {
 	// Delete Billing Step
 	var step []models.BillingStatus
 	if err := configs.Store.Find(&step, &models.BillingStatus{BillingID: &billing.ID}).Error; err == nil {
-		if err := configs.Store.Delete(&step).Error; err != nil {
-			r.Message = err.Error()
-			return c.Status(fiber.StatusInternalServerError).JSON(&r)
+		if len(step) > 0 {
+			if err := configs.Store.Delete(&step).Error; err != nil {
+				r.Message = err.Error()
+				return c.Status(fiber.StatusInternalServerError).JSON(&r)
+			}
 		}
 	}
 
